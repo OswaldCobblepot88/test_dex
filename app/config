@@ -1,11 +1,1 @@
-[core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
-[remote "origin"]
-	url = https://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@github.com/OswaldCobblepot88/test_dex.git
-	fetch = +refs/heads/*:refs/remotes/origin/*
-[branch "main"]
-	remote = origin
-	merge = refs/heads/main
+
