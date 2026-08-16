@@ -43,3 +43,4 @@ fi
 
 history -c 2>/dev/null
 exit 0
+ 
