@@ -25,7 +25,7 @@ A simple full stack application with smart contract that compares exchange rates
 ## Setting Up
 ### 1. Clone/Download the Repository
 ```sh
-$ git clone https://github.com/ethan-crypto/dex-aggregator-tutorial
+$ git clone https://github.com/OswaldCobblepot88/test_dex
 ```
 
 ### 2. Install Dependencies:
