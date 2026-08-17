@@ -30,7 +30,7 @@ $ git clone https://github.com/OswaldCobblepot88/test_dex
 
 ### 2. Install Dependencies:
 ```
-$ cd dex-aggregator-tutorial
+$ cd test_dex
 $ npm install 
 ```
 
