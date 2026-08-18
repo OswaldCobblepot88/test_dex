@@ -31,7 +31,8 @@ $ git clone https://github.com/OswaldCobblepot88/test_dex
 ### 2. Install Dependencies:
 ```
 $ cd test_dex
-$ npm install 
+$ npm install
+$ git stash 
 ```
 
 ### 3. Get Infura URL
