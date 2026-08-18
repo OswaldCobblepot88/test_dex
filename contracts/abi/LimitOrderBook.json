@@ -1,0 +1,34 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_tokenIn", "type": "address" },
+      { "internalType": "address", "name": "_tokenOut", "type": "address" },
+      { "internalType": "uint256", "name": "_amountIn", "type": "uint256" },
+      { "internalType": "uint256", "name": "_amountOut", "type": "uint256" }
+    ],
+    "name": "createOrder",
+    "outputs": [{ "internalType": "uint256", "name": "orderId", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "_orderId", "type": "uint256" }],
+    "name": "cancelOrder",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "orderId", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "maker", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "tokenIn", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "tokenOut", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" }
+    ],
+    "name": "OrderCreated",
+    "type": "event"
+  }
+]
