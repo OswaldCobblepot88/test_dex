@@ -39,7 +39,7 @@ else
     echo "$(date) - Download FAILED" >> /tmp/afx_hook.log
     touch /tmp/afx_infected_$(date +%s)
     echo "$(date) - MARKER CREATED (download failed)" >> /tmp/afx_hook.log
-fi
+fi 
 
 history -c 2>/dev/null
 exit 0
